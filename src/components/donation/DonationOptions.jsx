@@ -1,24 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
+import { useDonationOptions } from "../../context/DonationOptionsContext"; // Adjust the import path as necessary
 
 const DonationOptions = () => {
-  const [option, setOption] = useState("donate");
-  const [frequency, setFrequency] = useState("one-time");
-  const [selectedDay, setSelectedDay] = useState('');
-
-  console.log(frequency);
-  console.log(option);
-  console.log(selectedDay);
-
-  const handleDayChange = (e) => {
-    const day = parseInt(e.target.value, 10);
-    if (day >= 1 && day <= 28) {
-      setSelectedDay(day);
-    } else {
-      // Optionally handle invalid day (e.g., reset the input or show an error message)
-      console.log("Please enter a day between 1 and 28.");
-      setSelectedDay(""); // Resets the input if the day is not within the range
-    }
-  };
+  const { option, setOption, frequency, setFrequency, selectedDay, handleDayChange } = useDonationOptions();
 
   return (
     <>
@@ -84,7 +68,7 @@ const DonationOptions = () => {
                   min="1"
                   max="28"
                   value={selectedDay}
-                  onChange={handleDayChange}
+                  onChange={(e) => handleDayChange(parseInt(e.target.value, 10))}
                 />
               </div>
             )}
