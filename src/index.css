@@ -1,0 +1,15 @@
+/* tailwind.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .phone-input .PhoneInputCountrySelect {
+    @apply rounded-l-md border-r-0 !important;
+  }
+  
+  .phone-input .PhoneInputInput {
+    @apply rounded-r-md !important;
+  }
+}
