@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useAmount } from "../context/AmountContext"; // Adjust path as needed
 import useSubmitDonation from "../hooks/useSubmitDonation";
 import Button from "../components/common/Button";
+import { Navigate, useNavigate } from 'react-router-dom'; 
 
 const SubmitDonationButton = ({ handleBackClick }) => {
+  const navigate = useNavigate();
   const { amount, phone } = useAmount();
   const [errorMessage, setErrorMessage] = useState(""); // State to manage error messages
 
@@ -18,6 +20,7 @@ const SubmitDonationButton = ({ handleBackClick }) => {
   const submitDonation = useSubmitDonation();
 
   const handleSubmission = () => {
+    navigate('/success')
     // Reset error message state on each submission attempt
     setErrorMessage("");
 
@@ -33,6 +36,7 @@ const SubmitDonationButton = ({ handleBackClick }) => {
 
     submitDonation();
     handleBackClick();
+    
   };
 
   return (

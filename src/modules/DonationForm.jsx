@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for routing
+import { useNavigate } from 'react-router-dom';
 import { AmountContext } from '../context/AmountContext';
-import { DonationDetailsContext } from '../context/DonationDetailsContext';
-import { useDonationOptions } from '../context/DonationOptionsContext'; // Import the custom hook
+import { useDonationDetails } from '../context/DonationDetailsContext';
+import { useDonationOptions } from '../context/DonationOptionsContext';
 import Tabs from '../components/donation/Tabs';
 import TabPanel from '../components/donation/TabPanel';
 import MyDonation from './MyDonation';
@@ -13,23 +13,37 @@ import SubmitDonation from './SubmitDonation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDonate, faCreditCard, faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import Button from "../components/common/Button";
+import useSubmitPledge from '../hooks/useSubmitPledge';
 
 const DonationForm = () => {
-  const navigate = useNavigate(); // For navigation
-  const { option } = useDonationOptions(); // Get the donation option
+  const navigate = useNavigate();
+  const { option } = useDonationOptions();
+  const { userDetails, isComplete } = useDonationDetails();  // Deconstruct userDetails here
+  const { submitDonation, isLoading, error } = useSubmitPledge();
+
   const tabLabels = ['My Donation', 'Payment Type', 'Payment Details'];
   const [activeTab, setActiveTab] = useState(tabLabels[0]);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleContinueClick = () => {
-    setErrorMessage(''); // Clear previous error messages
+  const handleContinueClick = async () => {
+    if (!isComplete()) {
+      setErrorMessage('Please fill in all required fields.');
+      return;
+    }
+    setErrorMessage('');
 
     const currentTabIndex = tabLabels.indexOf(activeTab);
     const nextTabIndex = currentTabIndex + 1;
 
     if (option === 'pledge' && currentTabIndex === 1) {
-      // Redirect to a custom page or change the component state
-      navigate('/pledge-complete'); // Example of using navigate
+      try {
+        const result = await submitDonation(userDetails);
+        console.log('Donation submitted successfully:', result);
+        navigate('/pledge-complete');
+      } catch (error) {
+        console.error('Error submitting donation:', error);
+        setErrorMessage(error.message || 'Failed to submit donation.');
+      }
     } else if (nextTabIndex < tabLabels.length) {
       setActiveTab(tabLabels[nextTabIndex]);
     }
@@ -58,7 +72,7 @@ const DonationForm = () => {
           <Button text="Back" color="red" textColor="white" className="w-32 h-12 mt-4" onClick={() => setActiveTab(tabLabels[tabLabels.indexOf(activeTab) - 1])} />
         )}
         {activeTab !== tabLabels[tabLabels.length - 1] && (
-          <ContinueButton handleContinueClick={handleContinueClick} />
+          <ContinueButton handleContinueClick={handleContinueClick} isLoading={isLoading} />
         )}
         {activeTab === tabLabels[tabLabels.length - 1] && (
           <SubmitDonation />

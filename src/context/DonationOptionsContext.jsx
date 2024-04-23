@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 
 // Create the context
-const DonationOptionsContext = createContext();
+export const DonationOptionsContext = createContext();
 
 // Custom hook to use the context
 export const useDonationOptions = () => useContext(DonationOptionsContext);

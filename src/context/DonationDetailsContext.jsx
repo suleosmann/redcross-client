@@ -5,7 +5,6 @@ export const DonationDetailsContext = createContext();
 export const useDonationDetails = () => useContext(DonationDetailsContext);
 
 export const DonationDetailsProvider = ({ children }) => {
-  const [paymentMethod, setPaymentMethod] = useState(null);
   const [userDetails, setUserDetails] = useState({
     firstName: '',
     lastName: '',
@@ -13,20 +12,31 @@ export const DonationDetailsProvider = ({ children }) => {
     country: 'Kenya',
     phone: '+254',
     anonymous: false,
+    companyName: '',
+    county: ''
   });
 
-  const selectPaymentMethod = (method) => {
-    setPaymentMethod(method);
-    console.log("Selected payment method:", method); // Add this line
-
-  };
-
+  // Function to update userDetails
   const updateUserDetails = (details) => {
     setUserDetails(prevDetails => ({ ...prevDetails, ...details }));
   };
 
+  const isComplete = () => {
+    if (userDetails.anonymous) {
+      return true;  // If anonymous, no need for other fields
+    }
+    const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'country'];
+    if (userDetails.country === 'Kenya') {
+      requiredFields.push('county');
+    }
+    if (userDetails.companyName) {
+      requiredFields.push('companyName');
+    }
+    return requiredFields.every(field => userDetails[field]);
+  };
+
   return (
-    <DonationDetailsContext.Provider value={{ paymentMethod, selectPaymentMethod, userDetails, updateUserDetails }}>
+    <DonationDetailsContext.Provider value={{ userDetails, updateUserDetails, isComplete }}>
       {children}
     </DonationDetailsContext.Provider>
   );
