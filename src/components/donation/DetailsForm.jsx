@@ -24,16 +24,22 @@ const UserDetails = () => {
   const [phone, setPhone] = useState("");
 
   const handleAnonymousChange = (isAnonymous) => {
-    updateUserDetails({ ...userDetails, anonymous: isAnonymous });
+    if (!isCompanyDonation) {
+      updateUserDetails({ ...userDetails, anonymous: isAnonymous });
+    }
   };
 
   const handleCompanyDonationChange = (checked) => {
     setIsCompanyDonation(checked);
-    updateUserDetails({
-      ...userDetails,
-      companyName: checked ? userDetails.companyName : "",
-      anonymous: !checked && userDetails.anonymous,
-    });
+    if (checked) {
+      updateUserDetails({
+        ...userDetails,
+        companyName: userDetails.companyName || "",
+        anonymous: false
+      });
+    } else {
+      updateUserDetails({ ...userDetails, companyName: "" });
+    }
   };
 
   const handleChange = (name, value) => {
@@ -41,7 +47,7 @@ const UserDetails = () => {
       setSelectedCountry(value);
       updateUserDetails({
         ...userDetails,
-        county: value !== "Kenya" ? "" : userDetails.county,
+        county: value !== "Kenya" ? "" : userDetails.county
       });
     } else {
       updateUserDetails({ ...userDetails, [name]: value });
@@ -61,10 +67,13 @@ const UserDetails = () => {
           type="checkbox"
           id="companyDonationCheckbox"
           checked={isCompanyDonation}
-          onChange={handleCompanyDonationChange}
+          onChange={(e) => handleCompanyDonationChange(e.target.checked)}
           className="w-4 h-6"
         />
-        <label htmlFor="companyDonationCheckbox" className="ml-2 text-gray-700 text-sm">
+        <label
+          htmlFor="companyDonationCheckbox"
+          className="ml-2 text-gray-700 text-sm"
+        >
           Is this donation on behalf of a company?
         </label>
       </div>
@@ -170,7 +179,7 @@ const UserDetails = () => {
         </div>
       )}
 
-      {!userDetails.anonymous && option !== "pledge" && (
+      {!isCompanyDonation && option !== "pledge" && (
         <div className="flex items-center mb-4">
           <input
             type="checkbox"

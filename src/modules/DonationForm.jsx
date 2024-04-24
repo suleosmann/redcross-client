@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AmountContext } from '../context/AmountContext';
+import { AmountContext, useAmount } from '../context/AmountContext';
 import { useDonationDetails } from '../context/DonationDetailsContext';
 import { useDonationOptions } from '../context/DonationOptionsContext';
+
 import Tabs from '../components/donation/Tabs';
 import TabPanel from '../components/donation/TabPanel';
 import MyDonation from './MyDonation';
-import PaymentType from './PaymentType';
+import UserDetailsForm from './UserDetailsForm';
 import PaymentDetails from './PaymentDetails';
 import ContinueButton from '../components/donation/ContinueButton';
 import SubmitDonation from './SubmitDonation';
@@ -17,24 +18,37 @@ import useSubmitPledge from '../hooks/useSubmitPledge';
 
 const DonationForm = () => {
   const navigate = useNavigate();
-  const { option } = useDonationOptions();
+  const { amount } = useAmount();
+  const { option, selectedDay, frequency } = useDonationOptions();
   const { userDetails, isComplete } = useDonationDetails();  // Deconstruct userDetails here
   const { submitDonation, isLoading, error } = useSubmitPledge();
 
-  const tabLabels = ['My Donation', 'Payment Type', 'Payment Details'];
+  const tabLabels = ['My Donation', 'User Details Form', 'Payment Details'];
   const [activeTab, setActiveTab] = useState(tabLabels[0]);
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleContinueClick = async () => {
-    if (!isComplete()) {
-      setErrorMessage('Please fill in all required fields.');
+    if (activeTab === 'My Donation') {
+      if (!amount) {
+        setErrorMessage('Please enter a valid amount and select an option.');
+        return; 
+      }
+      else if (frequency === 'monthly' && !selectedDay) {
+        setErrorMessage('Please select a pledge day.');
+        return;
+      }
+    }
+    
+    // Validate user details in the "User Details Form" tab
+    if (activeTab === 'User Details Form' && !isComplete()) {
+      setErrorMessage('Please complete all required fields or mark as anonymous.');
       return;
     }
+  
     setErrorMessage('');
-
     const currentTabIndex = tabLabels.indexOf(activeTab);
     const nextTabIndex = currentTabIndex + 1;
-
+  
     if (option === 'pledge' && currentTabIndex === 1) {
       try {
         const result = await submitDonation(userDetails);
@@ -48,6 +62,7 @@ const DonationForm = () => {
       setActiveTab(tabLabels[nextTabIndex]);
     }
   };
+  
 
   return (
     <div className="bg-white h-[80vh] p-4 rounded-lg shadow-md max-w-1/2 my-2">
@@ -55,8 +70,8 @@ const DonationForm = () => {
         <TabPanel label="My Donation" icon={<FontAwesomeIcon icon={faDonate} className="text-gray-500" />}>
           <MyDonation />
         </TabPanel>
-        <TabPanel label="Payment Type" icon={<FontAwesomeIcon icon={faCreditCard} className="text-gray-500" />}>
-          <PaymentType />
+        <TabPanel label="User Details Form" icon={<FontAwesomeIcon icon={faCreditCard} className="text-gray-500" />}>
+          <UserDetailsForm />
         </TabPanel>
         <TabPanel label="Payment Details" icon={<FontAwesomeIcon icon={faFileAlt} className="text-gray-500" />}>
           <PaymentDetails />

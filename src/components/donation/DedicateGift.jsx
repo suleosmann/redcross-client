@@ -1,29 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckSquare, faSquare } from "@fortawesome/free-solid-svg-icons";
-import { useDonation } from "../../context/DonationContext"; 
+import { useDonation } from "../../context/DonationContext"; // Ensure the path matches
+
 const DedicateGift = () => {
-  const [isDedicated, setIsDedicated] = useState(false);
-  const { setDedicationName } = useDonation(); 
+  const { dedication, setDedicationName } = useDonation();
+  const isDedicated = !!dedication; // This will check if dedication is not an empty string
 
   const handleCheckboxChange = () => {
-    setIsDedicated(!isDedicated);
-    if (isDedicated) setDedicationName("");
+    setDedicationName(isDedicated ? "" : " "); 
   };
 
   const handleNameChange = (event) => {
-    setDedicationName(event.target.value); 
+    setDedicationName(event.target.value);
   };
 
   return (
     <div className="space-y-3">
-      <label className="flex items-center space-x-2">
+      <label className="flex items-center space-x-2 cursor-pointer" onClick={handleCheckboxChange}>
         <FontAwesomeIcon
           icon={isDedicated ? faCheckSquare : faSquare}
-          onClick={handleCheckboxChange}
-          className={`cursor-pointer border-2 border-gray-300 ${isDedicated ? "text-red-600" : "text-white"}`}
+          className={`cursor-pointer ${isDedicated ? "text-red-600" : "text-white border-2 border-gray-400"}`}
         />
-        <span className="text-gray-500">
+        <span className="text-gray-700">
           Dedicate this gift to a friend or loved one
         </span>
       </label>
@@ -31,9 +30,9 @@ const DedicateGift = () => {
         <input
           type="text"
           placeholder="Enter Name"
-          onChange={handleNameChange} // Use handleNameChange to update the dedication name in the context
-          className="form-input mt-1 block w-full border-2 p-2 border-gray-500 rounded-md shadow-sm"
-          
+          value={dedication}
+          onChange={handleNameChange}
+          className="form-input mt-1 block w-full p-2 border border-gray-300 rounded-md"
         />
       )}
     </div>
