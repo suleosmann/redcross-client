@@ -11,16 +11,19 @@ import ContextProviderCombiner from "./context/ContextProviderCombiner";
 import { DonationDetailsProvider } from './context/DonationDetailsContext';
 import { DonationTypeProvider } from "./context/DonationTypeContext";
 import { DonationOptionsProvider } from "./context/DonationOptionsContext";
+import UserForm from "./pages/UserForm";
+import {UserDetailsProvider} from "./context/UserDetailsContext";
 
 
 function App() {
   return (
     <BrowserRouter>
-      <ContextProviderCombiner contexts={[<AmountProvider />, <FrequencyProvider />, <DonationProvider/>, <DonationDetailsProvider/>, <DonationTypeProvider/>, <DonationOptionsProvider/>]}>
+      <ContextProviderCombiner contexts={[<AmountProvider />, <FrequencyProvider />, <DonationProvider/>, <DonationDetailsProvider/>, <DonationTypeProvider/>, <DonationOptionsProvider/>, <UserDetailsProvider/>]}>
         <Routes>
           <Route path="/" element={<DonationContainer />} />
           <Route path="/pledge-complete" element={<PledgeComplete />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/user-form" element={<UserForm/>} />
         </Routes>
       </ContextProviderCombiner>
     </BrowserRouter>

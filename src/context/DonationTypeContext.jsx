@@ -5,7 +5,7 @@ const DonationTypeContext = createContext();
 export const useDonationType = () => useContext(DonationTypeContext);
 
 export const DonationTypeProvider = ({ children }) => {
-  const [donationType, setDonationType] = useState(null);
+  const [donationType, setDonationType] = useState("individual");
 
   return (
     <DonationTypeContext.Provider value={{ donationType, setDonationType }}>
@@ -13,3 +13,5 @@ export const DonationTypeProvider = ({ children }) => {
     </DonationTypeContext.Provider>
   );
 };
+
+export default DonationTypeProvider;

@@ -6,6 +6,7 @@ import UserDetails from "./UserDetails";
 import { useDonationDetails } from "../context/DonationDetailsContext";
 import { useDonationType } from "../context/DonationTypeContext";
 import DetailsForm from "../components/donation/DetailsForm";
+import UserForm from "../pages/UserForm"
 
 
 const PaymentOptions = () => {
@@ -19,7 +20,8 @@ const PaymentOptions = () => {
 
   return (
     <>
-    <DetailsForm/>
+    {/* <DetailsForm/> */}
+    <UserForm/>
       {/* <div className="flex justify-between space-x-4 my-12">
         <Button
           text="Credit Card"

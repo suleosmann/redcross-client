@@ -1,11 +1,41 @@
 import React from "react";
 import { useDonationOptions } from "../../context/DonationOptionsContext"; // Adjust the import path as necessary
-
+import {useDonationType} from '../../context/DonationTypeContext'
 const DonationOptions = () => {
   const { option, setOption, frequency, setFrequency, selectedDay, handleDayChange } = useDonationOptions();
+  const {donationType, setDonationType} = useDonationType()
+
+  console.log("donate",donationType) 
 
   return (
     <>
+    <div className="flex flex-col space-y-4 mb-4">
+        <div className="flex items-center space-x-4">
+          <h3>Select donate as: </h3>
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              className="form-radio"
+              name="donateType"
+              value="individual"
+              checked={donationType === "individual"}
+              onChange={() => setDonationType("individual")}
+            />
+            <span className="ml-2">Individual</span>
+          </label>
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="radio"
+              className="form-radio text-red-600"
+              name="donateType"
+              value="organization"
+              checked={donationType === "organization"}
+              onChange={() => setDonationType("organization")}
+            />
+            <span className="ml-2">organization</span>
+          </label>
+        </div>
+      </div>
       <div className="flex flex-col space-y-4 mb-4">
         <div className="flex items-center space-x-4">
           <h3>Select donation option: </h3>

@@ -10,7 +10,7 @@ export const DonationDetailsProvider = ({ children }) => {
     lastName: '',
     email: '',
     country: 'Kenya',
-    phone: '+254',
+    phone: '',
     anonymous: false,
     companyName: '',
     county: ''
@@ -23,7 +23,7 @@ export const DonationDetailsProvider = ({ children }) => {
 
   const isComplete = () => {
     if (userDetails.anonymous) {
-      return true;  // If anonymous, no need for other fields
+      return true;  
     }
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'country'];
     if (userDetails.country === 'Kenya') {

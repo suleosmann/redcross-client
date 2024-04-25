@@ -13,7 +13,7 @@ const MyDonation = () => {
       <AmountSelector />
       <ProcessingFeeCheckbox />
       <SupportDropdown />
-      <DedicateGift />
+      {/* <DedicateGift /> */}
     </div>
   );
 };

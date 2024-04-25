@@ -1,45 +1,46 @@
 import React, { useState } from 'react';
+import { useDonation } from '../../context/DonationContext';  // Ensure this path matches your actual file structure
 
-// Placeholder data for the causes
 const causesDetails = {
   default: {
     title: 'How a gift to Disaster Relief can help',
     description: 'Your gift to Red Cross Disaster Relief helps people affected by disasters like home fire, hurricanes, tornadoes and countless other crises. Financial donations enable the Red Cross to prepare for, respond to and help people recover from disasters big and small.',
-    img: 'https://www.redcross.or.ke/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-17-at-174249-1200x750.jpeg' 
+    img: 'https://www.redcross.or.ke/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-17-at-174249-1200x750.jpeg'
   },
   'Where it Matters': {
     title: 'Where it Matters',
     description: "Your gift to Where it Is Needed Most gives us the flexibility to respond whenever and wherever we're needed, providing relief and hope in a dark hour.",
-    img: 'https://www.redcross.or.ke/wp-content/uploads/2023/08/key-requirement-1200x800-1.jpg' 
+    img: 'https://www.redcross.or.ke/wp-content/uploads/2023/08/key-requirement-1200x800-1.jpg'
   },
   'El-Nino Response': {
     title: 'Supporting El-Nino Response',
     description: 'Aid those affected by the devastating effects of the El-Nino weather phenomenon...',
-    img: 'https://www.redcross.or.ke/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-17-at-174249-1200x750.jpeg' 
+    img: 'https://www.redcross.or.ke/wp-content/uploads/2024/01/WhatsApp-Image-2024-01-17-at-174249-1200x750.jpeg'
   },
   'Embakasi Gas Explosion': {
     title: 'Helping Victims of Embakasi Gas Explosion',
     description: 'Provide relief to the families impacted by the Embakasi gas explosion...',
-    img: 'https://www.aljazeera.com/wp-content/uploads/2024/02/AFP__20240130__34H94FY__v3__Preview__TopshotKenyaFire-1706852455.jpg?resize=1170%2C780&quality=80' 
+    img: 'https://www.aljazeera.com/wp-content/uploads/2024/02/AFP__20240130__34H94FY__v3__Preview__TopshotKenyaFire-1706852455.jpg?resize=1170%2C780&quality=80'
   },
-  
 };
 
 const SupportDropdown = () => {
   const [selectedCause, setSelectedCause] = useState('default');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const causes = Object.keys(causesDetails).filter((key) => key !== 'default');
+  const { selectSupportOption } = useDonation(); // Destructure the function to set selected support option
 
   const handleButtonClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleSelectCause = (cause) => {
-    setSelectedCause(cause);
-    setIsDropdownOpen(false); 
+  const handleSelectCause = (causeKey) => {
+    setSelectedCause(causeKey);
+    selectSupportOption(causesDetails[causeKey].title); // Update the selected support option in the context
+    setIsDropdownOpen(false);
   };
 
   const { title, description, img } = causesDetails[selectedCause];
+
 
   return (
     <div className="relative inline-block text-left mt-4">
@@ -78,11 +79,13 @@ const SupportDropdown = () => {
       )}
     </div>
 
-      <div className="flex mt-4 p-4 border-t border-gray-200">
-        <div><img src={img} alt={title} className="w-96 h-auto pr-6" /></div>
-        <div>
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <p className="text-gray-700">{description}</p>
+    <div className="mt-4 p-4 border-t border-gray-200">
+        <div className="flex">
+          <img src={img} alt={title} className="object-cover h-32 w-48" />
+          <div className="ml-4">
+            <h3 className="text-lg font-semibold">{title}</h3>
+            <p>{description}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -16,11 +16,14 @@ import { faDonate, faCreditCard, faFileAlt } from '@fortawesome/free-solid-svg-i
 import Button from "../components/common/Button";
 import useSubmitPledge from '../hooks/useSubmitPledge';
 
+import { useUserDetails } from '../context/UserDetailsContext';
+
 const DonationForm = () => {
+  const { userDetails, isComplete } = useUserDetails();
+
   const navigate = useNavigate();
   const { amount } = useAmount();
   const { option, selectedDay, frequency } = useDonationOptions();
-  const { userDetails, isComplete } = useDonationDetails();  // Deconstruct userDetails here
   const { submitDonation, isLoading, error } = useSubmitPledge();
 
   const tabLabels = ['My Donation', 'User Details Form', 'Payment Details'];
@@ -41,7 +44,7 @@ const DonationForm = () => {
     
     // Validate user details in the "User Details Form" tab
     if (activeTab === 'User Details Form' && !isComplete()) {
-      setErrorMessage('Please complete all required fields or mark as anonymous.');
+      setErrorMessage('Please complete all required fields');
       return;
     }
   
@@ -65,7 +68,7 @@ const DonationForm = () => {
   
 
   return (
-    <div className="bg-white h-[80vh] p-4 rounded-lg shadow-md max-w-1/2 my-2">
+    <div className="bg-white h-screen p-4 rounded-lg shadow-md max-w-1/2 my-2">
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab}>
         <TabPanel label="My Donation" icon={<FontAwesomeIcon icon={faDonate} className="text-gray-500" />}>
           <MyDonation />

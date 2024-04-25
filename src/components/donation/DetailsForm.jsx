@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { getData } from "country-list";
 import { useDonationDetails } from "../../context/DonationDetailsContext";
 import { useDonationOptions } from "../../context/DonationOptionsContext";
+import { useDonationType } from "../../context/DonationTypeContext";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 const kenyanCounties = [
   "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo Marakwet", "Embu", "Garissa",
-  "Homa Bay", "Isiolo", "Kajiado", "Kakamega", "Kericho", "Kiambu", "Kilifi", 
+  "Homa Bay", "Isiolo", "Kajiado", "Kakamega", "Kericho", "Kiambu", "Kilifi",
   "Kirinyaga", "Kisii", "Kisumu", "Kitui", "Kwale", "Laikipia", "Lamu", "Machakos",
   "Makueni", "Mandera", "Marsabit", "Meru", "Migori", "Mombasa", "Murang'a",
   "Nairobi", "Nakuru", "Nandi", "Narok", "Nyamira", "Nyandarua", "Nyeri", "Samburu",
@@ -15,34 +16,33 @@ const kenyanCounties = [
   "Uasin Gishu", "Vihiga", "Wajir", "West Pokot"
 ];
 
+const isValidEmail = (email) => {
+  const regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return regex.test(email);
+};
+
 const UserDetails = () => {
   const { userDetails, updateUserDetails } = useDonationDetails();
   const { option } = useDonationOptions();
   const [selectedCountry, setSelectedCountry] = useState(userDetails.country || "");
   const countries = getData();
-  const [isCompanyDonation, setIsCompanyDonation] = useState(false);
-  const [phone, setPhone] = useState("");
+  const { donationType, setDonationType } = useDonationType();
+  const [errorMessage, setErrorMessage] = useState("");
+
+
+  
+
 
   const handleAnonymousChange = (isAnonymous) => {
-    if (!isCompanyDonation) {
-      updateUserDetails({ ...userDetails, anonymous: isAnonymous });
-    }
-  };
-
-  const handleCompanyDonationChange = (checked) => {
-    setIsCompanyDonation(checked);
-    if (checked) {
-      updateUserDetails({
-        ...userDetails,
-        companyName: userDetails.companyName || "",
-        anonymous: false
-      });
-    } else {
-      updateUserDetails({ ...userDetails, companyName: "" });
-    }
+    updateUserDetails({ ...userDetails, anonymous: isAnonymous });
   };
 
   const handleChange = (name, value) => {
+    if (name === "email" && !isValidEmail(value)) {
+      setErrorMessage("Please enter a valid email address.");
+    } else {
+      setErrorMessage("");
+    }
     if (name === "country") {
       setSelectedCountry(value);
       updateUserDetails({
@@ -56,36 +56,21 @@ const UserDetails = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    updateUserDetails({ ...userDetails, isCompanyDonation, phone });
+    updateUserDetails({ ...userDetails, phone });
     console.log("Submitted details:", userDetails);
   };
 
   return (
     <form onSubmit={handleSubmit} className="mx-20 my-12">
-      <div className="flex items-center mb-4">
-        <input
-          type="checkbox"
-          id="companyDonationCheckbox"
-          checked={isCompanyDonation}
-          onChange={(e) => handleCompanyDonationChange(e.target.checked)}
-          className="w-4 h-6"
-        />
-        <label
-          htmlFor="companyDonationCheckbox"
-          className="ml-2 text-gray-700 text-sm"
-        >
-          Is this donation on behalf of a company?
-        </label>
-      </div>
 
-      {isCompanyDonation && (
+      {donationType === 'organization' && (
         <div className="mb-4">
           <input
             type="text"
             placeholder="Company name"
             value={userDetails.companyName || ""}
             onChange={(e) => handleChange("companyName", e.target.value)}
-            required={isCompanyDonation}
+            required
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -169,17 +154,18 @@ const UserDetails = () => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <PhoneInput
-            international
-            countryCallingCodeEditable={true}
-            placeholder="Enter phone number"
-            value={phone}
-            onChange={setPhone}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          international
+          countryCallingCodeEditable={true}
+          placeholder="Enter phone number"
+          value={userDetails.phone}
+          onChange={(value) => handleChange("phone", value)}  // Pass the phone number directly
+          required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         </div>
       )}
 
-      {!isCompanyDonation && option !== "pledge" && (
+      {option !== "pledge" && (
         <div className="flex items-center mb-4">
           <input
             type="checkbox"

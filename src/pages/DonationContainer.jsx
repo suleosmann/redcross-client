@@ -5,7 +5,7 @@ const DonationContainer = () => {
 
 
   return (
-    <div className="flex max-w-8xl mx-3 h-screen my-6 overflow-hidden bg-white rounded-lg shadow-lg">
+    <div className="flex max-w-8xl mx-3 h-[96vh] my-6 overflow-hidden bg-white rounded-lg shadow-lg">
       <div className="w-2/5 bg-cover" style={{ backgroundImage: `url(${imageUrl})` }}>
       </div>
       
