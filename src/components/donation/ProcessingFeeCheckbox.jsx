@@ -14,9 +14,6 @@ const ProcessingFeeCheckbox = () => {
   console.log('total',totalAmount)
   return (
     <div className="p-4 border border-gray-300 rounded-md">
-      <p className="text-sm text-gray-600 mb-4">
-        $10 is the minimum online donation. All donations are tax deductible.
-      </p>
       <label className="flex items-center mt-2">
         <input
           type="checkbox"

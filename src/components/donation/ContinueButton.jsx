@@ -8,7 +8,7 @@ const ContinueButton = ({ handleContinueClick }) => {
         text="Continue"
         color="red"
         textColor="white"
-        className="w-32 h-12 mt-4"
+        className="w-32 h-12 mb-2 md:mb-0" // Adjust widths as needed
         onClick={handleContinueClick}
       />
     </div>

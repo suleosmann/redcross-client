@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useUserDetails } from "../context/UserDetailsContext";
 import { useDonationType } from "../context/DonationTypeContext";
 import { useDonationOptions } from "../context/DonationOptionsContext";
@@ -18,82 +18,27 @@ function UserForm() {
   };
   
   const handleAnonymousChange = (isAnonymous) => {
-    if (isAnonymous) {
-      updateUserDetails({
-        email: 'anonymous@anonymous.com',
-        firstName: 'Anonymous',
-        lastName: 'Anonymous',
-        phoneNumber: 'Anonymous',
-        company: 'Anonymous',
-        address: 'Anonymous',
-        country: 'Anonymous',
-        county: 'Anonymous',
-        anonymous: true,
-      });
-    } else {
-      updateUserDetails({
-        email: '',
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        company: '',
-        address: '',
-        country: '',
-        county: '',
-        anonymous: false,
-      });
-    }
+    updateUserDetails({
+      ...userDetails,
+      firstName: isAnonymous ? 'Anonymous' : '',
+      lastName: isAnonymous ? 'Anonymous' : '',
+      email: isAnonymous ? 'anonymous@anonymous.com' : '',
+      phoneNumber: isAnonymous ? 'Anonymous' : '',
+      company: isAnonymous ? 'Anonymous' : '',
+      address: isAnonymous ? 'Anonymous' : '',
+      country: isAnonymous ? 'Anonymous' : '',
+      county: isAnonymous ? 'Anonymous' : '',
+      anonymous: isAnonymous,
+    });
   };
 
   // List of Kenyan counties
   const kenyanCounties = [
-    "Baringo",
-    "Bomet",
-    "Bungoma",
-    "Busia",
-    "Elgeyo Marakwet",
-    "Embu",
-    "Garissa",
-    "Homa Bay",
-    "Isiolo",
-    "Kajiado",
-    "Kakamega",
-    "Kericho",
-    "Kiambu",
-    "Kilifi",
-    "Kirinyaga",
-    "Kisii",
-    "Kisumu",
-    "Kitui",
-    "Kwale",
-    "Laikipia",
-    "Lamu",
-    "Machakos",
-    "Makueni",
-    "Mandera",
-    "Marsabit",
-    "Meru",
-    "Migori",
-    "Mombasa",
-    "Murang'a",
-    "Nairobi",
-    "Nakuru",
-    "Nandi",
-    "Narok",
-    "Nyamira",
-    "Nyandarua",
-    "Nyeri",
-    "Samburu",
-    "Siaya",
-    "Taita-Taveta",
-    "Tana River",
-    "Tharaka-Nithi",
-    "Trans Nzoia",
-    "Turkana",
-    "Uasin Gishu",
-    "Vihiga",
-    "Wajir",
-    "West Pokot",
+    "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo Marakwet", "Embu", "Garissa", "Homa Bay", "Isiolo", "Kajiado",
+    "Kakamega", "Kericho", "Kiambu", "Kilifi", "Kirinyaga", "Kisii", "Kisumu", "Kitui", "Kwale", "Laikipia", "Lamu",
+    "Machakos", "Makueni", "Mandera", "Marsabit", "Meru", "Migori", "Mombasa", "Murang'a", "Nairobi", "Nakuru",
+    "Nandi", "Narok", "Nyamira", "Nyandarua", "Nyeri", "Samburu", "Siaya", "Taita-Taveta", "Tana River",
+    "Tharaka-Nithi", "Trans Nzoia", "Turkana", "Uasin Gishu", "Vihiga", "Wajir", "West Pokot",
   ];
 
   return (
@@ -103,9 +48,8 @@ function UserForm() {
       <div className="grid md:grid-cols-2 md:gap-6">
         <div className="relative z-0 w-full mb-5 group">
           <input
+            name="firstName"
             type="text"
-            name="floating_first_name"
-            id="floating_first_name"
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
             placeholder=" "
             required
@@ -122,8 +66,7 @@ function UserForm() {
         <div className="relative z-0 w-full mb-5 group">
           <input
             type="text"
-            name="floating_last_name"
-            id="floating_last_name"
+            name="lastName"
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-blue-red peer"
             placeholder=" "
             required
@@ -142,8 +85,7 @@ function UserForm() {
         <div className="relative z-0 w-full mb-5 group">
           <input
             type="text"
-            name="floating_company"
-            id="floating_company"
+            name="company"
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
             placeholder=" "
             required
@@ -162,8 +104,7 @@ function UserForm() {
       <div className="relative z-0 w-full mb-5 group">
         <input
           type="email"
-          name="floating_email"
-          id="floating_email"
+          name="email"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
           placeholder=" "
           required
@@ -182,12 +123,11 @@ function UserForm() {
       {/* Country Selector */}
       <div className="relative z-0 w-full mb-5 group">
         <select
-          name="floating_country"
-          id="floating_country"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
           required
           value={userDetails.country}
           onChange={handleInputChange}
+          name="country"
         >
           <option value="">Select Country</option>
           {countries.map(({ code, name }) => (
@@ -208,12 +148,11 @@ function UserForm() {
       {userDetails.country === "Kenya" && (
         <div className="relative z-0 w-full mb-5 group">
           <select
-            name="floating_county"
-            id="floating_county"
             className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
             required
             value={userDetails.county}
             onChange={handleInputChange}
+            name="county"
           >
             <option value="">Select County</option>
             {kenyanCounties.map((county) => (
@@ -233,9 +172,8 @@ function UserForm() {
       <div className="relative z-0 w-full mb-5 group">
         <input
           type="tel"
+          name="phoneNumber"
           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-          name="floating_phone"
-          id="floating_phone"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
           placeholder=" "
           required
@@ -252,8 +190,7 @@ function UserForm() {
       <div className="relative z-0 w-full mb-5 group">
         <input
           type="text"
-          name="floating_address"
-          id="floating_address"
+          name="address"
           className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none  dark:border-gray-600 dark:focus:border-red-500 focus:outline-none focus:ring-0 focus:border-red-600 peer"
           placeholder=""
           required
@@ -270,19 +207,17 @@ function UserForm() {
 
       
       </>)}
-      {option !== "pledge" && donationType !== "organization" &&(
+      {option !== "pledge" && donationType !== "organization" && (
         <div className="flex items-center mb-4">
           <input
             type="checkbox"
+            name="anonymous"
             checked={userDetails.anonymous}
             onChange={(e) => handleAnonymousChange(e.target.checked)}
             className="w-4 h-4"
             id="anonymousCheckbox"
           />
-          <label
-            htmlFor="anonymousCheckbox"
-            className="ml-2 text-gray-700 text-sm"
-          >
+          <label htmlFor="anonymousCheckbox" className="ml-2 text-gray-700 text-sm">
             Donate anonymously
           </label>
         </div>

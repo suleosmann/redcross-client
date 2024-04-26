@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DonationContainer from "./pages/DonationContainer";
 import PledgeComplete from "./pages/PledgeComplete";
 import SuccessPage from "./pages/SuccessPage";
-import { FrequencyProvider } from "./context/FrequencyContext";
 import { AmountProvider } from "./context/AmountContext";
 import { DonationProvider } from "./context/DonationContext";
 import ContextProviderCombiner from "./context/ContextProviderCombiner";
@@ -18,12 +17,11 @@ import {UserDetailsProvider} from "./context/UserDetailsContext";
 function App() {
   return (
     <BrowserRouter>
-      <ContextProviderCombiner contexts={[<AmountProvider />, <FrequencyProvider />, <DonationProvider/>, <DonationDetailsProvider/>, <DonationTypeProvider/>, <DonationOptionsProvider/>, <UserDetailsProvider/>]}>
+      <ContextProviderCombiner contexts={[<AmountProvider />, <DonationProvider/>, <DonationDetailsProvider/>, <DonationTypeProvider/>, <DonationOptionsProvider/>, <UserDetailsProvider/>]}>
         <Routes>
           <Route path="/" element={<DonationContainer />} />
           <Route path="/pledge-complete" element={<PledgeComplete />} />
           <Route path="/success" element={<SuccessPage />} />
-          <Route path="/user-form" element={<UserForm/>} />
         </Routes>
       </ContextProviderCombiner>
     </BrowserRouter>

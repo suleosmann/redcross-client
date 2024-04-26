@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAmount } from "../context/AmountContext"; // Adjust path as needed
-import useSubmitDonation from "../hooks/useSubmitDonation";
+import useSubmitDonation from "../hooks/useSubmitDonation"; // Ensure path is correct
 import Button from "../components/common/Button";
 import { Navigate, useNavigate } from 'react-router-dom'; 
 
@@ -17,27 +17,25 @@ const SubmitDonationButton = ({ handleBackClick }) => {
     return regex.test(phone);
   };
 
-  const submitDonation = useSubmitDonation();
+  const { submitDonation } = useSubmitDonation(); // Destructuring correctly
 
-  const handleSubmission = () => {
-    navigate('/success')
-    // Reset error message state on each submission attempt
-    setErrorMessage("");
-
-    // if (!isValidPhoneNumber(phone)) {
-    //   setErrorMessage("Please enter a valid Kenyan phone number.");
-    //   return;
-    // }
-
+  const handleSubmission = async () => {
+    setErrorMessage(""); // Reset error message
+  
     if (amount <= 0) {
       setErrorMessage("Please enter a valid donation amount.");
       return;
     }
-
-    submitDonation();
-    handleBackClick();
-    
+  
+    try {
+      await submitDonation(); // Wait for the submission to complete
+      navigate('/success'); // Navigate on successful submission
+    } catch (error) {
+      setErrorMessage("Failed to submit donation. Please try again.");
+      console.error(error);
+    }
   };
+  
 
   return (
     <>
@@ -51,7 +49,7 @@ const SubmitDonationButton = ({ handleBackClick }) => {
           text="Submit"
           color="red"
           textColor="white"
-          className="w-32 h-12 mt-4"
+          className="w-32 h-12 mb-2 md:mb-0" // Adjust widths as needed
           onClick={handleSubmission}
         />
       </div>

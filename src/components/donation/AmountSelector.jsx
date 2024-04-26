@@ -1,86 +1,79 @@
 import React, { useEffect, useState } from "react";
 import { useAmount } from "../../context/AmountContext";
+import { useDonationType } from "../../context/DonationTypeContext";
 
-// Preset amounts in USD and their KSH equivalents
-const amountsUSD = [75, 125, 250, 500, 1000];
-const amountsKSH = [1500, 2500, 5000, 10000, 20000];
+// Preset amounts in USD and their KSH equivalents for individuals and organizations
+const amountsUSDIndividual = [75, 125, 250, 500, 1000, 2000];
+const amountsKSHIndividual = [1500, 2500, 5000, 10000, 20000, 30000];
+const amountsUSDOrganization = [250, 500, 1000, 2000, 4000, 5000];
+const amountsKSHOrganization = [25000, 50000, 100000, 200000, 400000, 500000];
 
-const AmountSelector = ({ currency }) => {
+const AmountSelector = ({ currency , onAmountButtonClick}) => {
   const { amount, setAmount, setCurrency } = useAmount();
-
-  // Using state to handle which currency is currently active
-  const [isKsh, setIsKsh] = useState(currency === "KSH");
-
-  // Update the local state based on the current value in the context
+  const { donationType } = useDonationType();
+  const [isKsh, setIsKsh] = useState(true); // Set KSH as the default currency
   const [selectedAmount, setSelectedAmount] = useState(amount);
   const [customAmount, setCustomAmount] = useState("");
 
+  // Choose the correct set of amounts based on donation type and currency
+  const amountsUSD = donationType === "organization" ? amountsUSDOrganization : amountsUSDIndividual;
+  const amountsKSH = donationType === "organization" ? amountsKSHOrganization : amountsKSHIndividual;
+
   useEffect(() => {
-    // Set the amount in context when selectedAmount changes
     setAmount(selectedAmount);
   }, [selectedAmount, setAmount]);
 
   useEffect(() => {
-    // Update the custom amount in context if it's a valid number
     if (customAmount !== "") {
       setAmount(parseFloat(customAmount) || 0);
     }
   }, [customAmount, setAmount]);
 
-  // Toggle currency between USD and KSH
+  useEffect(() => {
+    setCurrency(isKsh ? "KSH" : "USD");
+  }, [isKsh, setCurrency]);
+
   const toggleCurrency = () => {
-    const newCurrency = isKsh ? "USD" : "KSH";
     setIsKsh(!isKsh);
-    setCurrency(newCurrency);
-    // Reset selected amount when changing currency
-    setSelectedAmount(null);
-    setCustomAmount("");
   };
 
   const handlePresetAmountClick = (amount) => {
-    // Toggle selected amount or deselect if the same amount is clicked
-    if (selectedAmount === amount) {
-      setSelectedAmount(null);
-    } else {
-      setSelectedAmount(amount);
-      setCustomAmount(""); // Clear custom amount input
-    }
+    setSelectedAmount(selectedAmount === amount ? null : amount);
+    setCustomAmount("");
+    onAmountButtonClick()
   };
 
   const handleCustomAmountChange = (e) => {
-    const newCustomAmount = e.target.value;
-    setSelectedAmount(null); // Clear any selected preset amount
-    setCustomAmount(newCustomAmount);
+    setCustomAmount(e.target.value);
+    setSelectedAmount(null);
   };
+
+  
 
   return (
     <div className="mb-4">
-      <div className="flex space-x-6">
-        <div className="mb-4 flex items-center">
-          <label className="mr-2">{isKsh ? "KSH" : "USD"}</label>
-          <div onClick={toggleCurrency} className="relative inline-block w-12 h-6 bg-gray-300 rounded-full cursor-pointer">
-            <span className={`absolute left-1 top-1 bg-red-600 w-4 h-4 rounded-full transition-transform ${isKsh ? "translate-x-6" : ""}`}></span>
-          </div>
+      <div className="flex items-center space-x-2 mb-4">
+        <span className={`text-gray-700 font-medium ${isKsh ? "font-bold" : ""}`}>KSH</span>
+        <div onClick={toggleCurrency} className="relative inline-block w-12 h-6 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300">
+          <span className={`absolute left-1 top-1 bg-red-600 w-4 h-4 rounded-full shadow-md transition-transform duration-300 ${isKsh ? "" : "translate-x-6"}`}></span>
         </div>
-        <div>
-          <p>Choose Amount</p>
-        </div>
+        <span className={`text-gray-700 font-medium ${!isKsh ? "font-bold" : ""}`}>USD</span>
       </div>
-      <div className="flex items-center space-x-4">
+      <p className="font-medium mb-2">Choose Amount:</p>
+      <div className="grid grid-cols-3 gap-4">
         {(isKsh ? amountsKSH : amountsUSD).map((presetAmount) => (
           <button
             key={presetAmount}
             onClick={() => handlePresetAmountClick(presetAmount)}
-            className={`w-[600px] h-10 rounded-lg border-2 ${
-              selectedAmount === presetAmount
-                ? "bg-white text-red-500 border-red-500"
-                : "bg-red-500 text-white border-transparent"
+            className={`text-sm px-3 py-2 rounded-md border ${
+              selectedAmount === presetAmount ? "bg-red-500 text-white border-red-500" : "bg-white text-red-500 border-gray-300"
             }`}
           >
             {isKsh ? `KSH ${presetAmount}` : `$${presetAmount}`}
           </button>
         ))}
-        <div className="flex border-2 border-red-500">
+      </div>
+      <div className="flex border-2 border-gray-300 rounded-md overflow-hidden mt-3">
           <span className="p-2 bg-red-500 text-white">
             {isKsh ? "KSH" : "$"}
           </span>
@@ -89,10 +82,9 @@ const AmountSelector = ({ currency }) => {
             value={customAmount}
             onChange={handleCustomAmountChange}
             placeholder="Other Amount"
-            className="w-40 h-10"
+            className="flex-1 p-2 text-sm"
           />
         </div>
-      </div>
     </div>
   );
 };

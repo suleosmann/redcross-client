@@ -41,14 +41,13 @@ const SupportDropdown = () => {
 
   const { title, description, img } = causesDetails[selectedCause];
 
-
   return (
-    <div className="relative inline-block text-left mt-4">
+    <div className="relative inline-block text-left mt-4 w-full">
       <div>
         <button
           type="button"
           onClick={handleButtonClick}
-          className="inline-flex justify-center w-96 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className="inline-flex justify-center w-full md:w-96 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
           id="options-menu"
           aria-haspopup="true"
           aria-expanded={isDropdownOpen}
@@ -60,9 +59,8 @@ const SupportDropdown = () => {
         </button>
       </div>
 
-      <div>
       {isDropdownOpen && (
-        <div className="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="origin-top-left absolute left-0 mt-2 w-full md:w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
           <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
             {Object.keys(causesDetails).filter(key => key !== 'default').map((causeKey) => (
               <button
@@ -77,11 +75,10 @@ const SupportDropdown = () => {
           </div>
         </div>
       )}
-    </div>
 
-    <div className="mt-4 p-4 border-t border-gray-200">
-        <div className="flex">
-          <img src={img} alt={title} className="object-cover h-32 w-48" />
+      <div className="mt-4 p-4 border-t border-gray-200">
+        <div className="flex flex-col md:flex-row">
+          <img src={img} alt={title} className="object-cover h-32 w-full md:w-48" />
           <div className="ml-4">
             <h3 className="text-lg font-semibold">{title}</h3>
             <p>{description}</p>

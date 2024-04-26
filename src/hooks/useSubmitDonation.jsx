@@ -1,54 +1,61 @@
-import { useContext } from 'react';
-import { AmountContext } from '../context/AmountContext';
-import { DonationContext } from '../context/DonationContext';
-import { DonationDetailsContext } from '../context/DonationDetailsContext';
-import { FrequencyContext } from '../context/FrequencyContext';
+import React from "react";
+import { useAmount } from "../context/AmountContext";
+import { useDonation } from "../context/DonationContext";
+import { useDonationOptions } from "../context/DonationOptionsContext";
+import { useDonationType } from "../context/DonationTypeContext";
+import { useUserDetails } from "../context/UserDetailsContext";
 
 const useSubmitDonation = () => {
-    const { amount, currency, processingFee, phone } = useContext(AmountContext);
-    const { selectedSupportOption, dedication } = useContext(DonationContext);
-    const { paymentMethod, userDetails } = useContext(DonationDetailsContext);
-    const { frequency, donationDate } = useContext(FrequencyContext);
+  const { amount, currency, processingFee, paymentMethod , totalAmount} = useAmount();
+  const { selectedSupportOption, dedication } = useDonation();
+  const { option, frequency } = useDonationOptions();
+  const { donationType } = useDonationType();
+  const { userDetails } = useUserDetails();
 
-    const submitDonation = async () => {
-        const donationData = {
-            amount,
-            currency,
-            processingFee,
-            phone,
-            selectedSupportOption,
-            dedication,
-            paymentMethod,
-            userDetails,
-            frequency,
-            donationDate,
-        };
-
-        try {
-            console.log('Sending donation data:', donationData);
-
-            const response = await fetch('http://127.0.0.1:5555/submit-donation', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(donationData),
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to submit donation');
-            }
-
-            const responseData = await response.json();
-            console.log('Donation submitted successfully:', responseData);
-            // Handle successful submission (e.g., showing a success message or redirecting the user)
-        } catch (error) {
-            console.error('Error submitting donation:', error);
-            // Handle submission error (e.g., showing an error message)
-        }
+  // Function to handle submission
+  const submitDonation = async () => {
+    // Construct the data object to be sent
+    const donationData = {
+        donationType,
+      donationOption: option,
+      frequency,
+      currency,
+      amount,
+      processingFee,
+      totalAmount,
+      selectedSupportOption,
+      //   dedication,
+      ...userDetails,
+      paymentMethod,    
     };
 
-    return submitDonation;
+    // Here, you would typically make an API call to submit the donation data
+    console.log("Submitting donation:", donationData);
+
+    // Example of making an API call
+    // const response = await fetch('/api/donation/submit', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(donationData)
+    // });
+
+    // return response.json();
+  };
+
+  // Expose the data and the submission function
+  return {
+    submitDonation,
+    amount,
+    currency,
+    selectedSupportOption,
+    dedication,
+    donationType,
+    ...userDetails,
+    option,
+    frequency,
+  };
 };
 
 export default useSubmitDonation;
