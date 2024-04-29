@@ -6,13 +6,14 @@ import { useUserDetails } from '../context/UserDetailsContext';
 
 const PaymentComponent = () => {
   const [selectedTab, setSelectedTab] = useState('CARD'); // Default to CARD
-  const { totalAmount, currency } = useAmount();
+  const { totalAmount, currency, selectPaymentMethod } = useAmount();
   const { userDetails, updateUserDetails } = useUserDetails();
 
   // Set default tab based on currency
   useEffect(() => {
     if (currency === 'KSH') {
       setSelectedTab('MPESA');
+      selectPaymentMethod('MPESA')
     }
   }, [currency]);
 

@@ -6,7 +6,7 @@ import { useDonationType } from "../context/DonationTypeContext";
 import { useUserDetails } from "../context/UserDetailsContext";
 
 const useSubmitDonation = () => {
-  const { amount, currency, processingFee, paymentMethod , totalAmount} = useAmount();
+  const { amount, currency, processingFee, paymentMethod, totalAmount } = useAmount();
   const { selectedSupportOption, dedication } = useDonation();
   const { option, frequency } = useDonationOptions();
   const { donationType } = useDonationType();
@@ -14,9 +14,20 @@ const useSubmitDonation = () => {
 
   // Function to handle submission
   const submitDonation = async () => {
-    // Construct the data object to be sent
+    // Prefill or adjust details if anonymous
+    const prefilledDetails = userDetails.anonymous ? {
+      firstName: 'Anonymous',
+      lastName: 'Donor',
+      email: 'anonymous@example.com',
+      phoneNumber: 'anonymous',
+      company: 'anonymous',
+      address: 'anonymous',
+      country: 'anonymous',
+      county: 'anonymous',
+    } : userDetails;
+
     const donationData = {
-        donationType,
+      donationType,
       donationOption: option,
       frequency,
       currency,
@@ -24,15 +35,13 @@ const useSubmitDonation = () => {
       processingFee,
       totalAmount,
       selectedSupportOption,
-      //   dedication,
-      ...userDetails,
-      paymentMethod,    
+      ...prefilledDetails,
+      paymentMethod,
     };
 
-    // Here, you would typically make an API call to submit the donation data
     console.log("Submitting donation:", donationData);
 
-    // Example of making an API call
+    // The actual API call would be uncommented in production
     // const response = await fetch('/api/donation/submit', {
     //   method: 'POST',
     //   headers: {
@@ -44,7 +53,6 @@ const useSubmitDonation = () => {
     // return response.json();
   };
 
-  // Expose the data and the submission function
   return {
     submitDonation,
     amount,

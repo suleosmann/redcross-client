@@ -1,12 +1,23 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useDonationOptions } from "../../context/DonationOptionsContext";
 import { useDonationType } from '../../context/DonationTypeContext';
+import { useUserDetails } from '../../context/UserDetailsContext';  // Assuming this is the correct path
 
 const DonationOptions = () => {
   const { option, setOption, frequency, setFrequency } = useDonationOptions();
   const { donationType, setDonationType } = useDonationType();
+  const { userDetails, updateUserDetails } = useUserDetails(); // Use this to manage user details
+
+  useEffect(() => {
+    if (donationType === "organization" || option === "pledge") {
+      if (userDetails.anonymous) {
+        updateUserDetails({ anonymous: false });
+      }
+    }
+  }, [donationType, option, userDetails.anonymous, updateUserDetails]);
 
   console.log("donate", donationType);
+
 
   return (
     <>

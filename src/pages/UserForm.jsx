@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useUserDetails } from "../context/UserDetailsContext";
 import { useDonationType } from "../context/DonationTypeContext";
 import { useDonationOptions } from "../context/DonationOptionsContext";
@@ -12,26 +12,44 @@ function UserForm() {
 
   const { userDetails, updateUserDetails } = useUserDetails();
 
+  useEffect(() => {
+    if (donationType !== "organization" && option === "pledge" && userDetails.anonymous) {
+      updateUserDetails(prevDetails => ({
+        ...prevDetails,
+        anonymous: false
+      }));  
+    }
+  }, [donationType, option, userDetails.anonymous, updateUserDetails]);
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     updateUserDetails(name, value);
   };
-  
-  const handleAnonymousChange = (isAnonymous) => {
-    updateUserDetails({
-      ...userDetails,
-      firstName: isAnonymous ? 'Anonymous' : '',
-      lastName: isAnonymous ? 'Anonymous' : '',
-      email: isAnonymous ? 'anonymous@anonymous.com' : '',
-      phoneNumber: isAnonymous ? 'Anonymous' : '',
-      company: isAnonymous ? 'Anonymous' : '',
-      address: isAnonymous ? 'Anonymous' : '',
-      country: isAnonymous ? 'Anonymous' : '',
-      county: isAnonymous ? 'Anonymous' : '',
-      anonymous: isAnonymous,
-    });
-  };
 
+  const handleAnonymousChange = (isAnonymous) => {
+    if (isAnonymous) {
+      // Set all personal details to blank if opting to be anonymous
+      updateUserDetails({
+        ...userDetails,
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        company: '',
+        address: '',
+        country: '',
+        county: '',
+        anonymous: true,
+      });
+    } else {
+      // Reset anonymous flag without clearing other data
+      updateUserDetails({
+        ...userDetails,
+        anonymous: false,
+      });
+    }
+  };
+  
   // List of Kenyan counties
   const kenyanCounties = [
     "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo Marakwet", "Embu", "Garissa", "Homa Bay", "Isiolo", "Kajiado",
